@@ -1,0 +1,51 @@
+version: '2.4'
+
+services:
+  django:
+    container_name: ${COMPOSE_PROJECT_NAME}_django
+    image: ${COMPOSE_PROJECT_NAME}_python
+    build:
+      context: .
+      dockerfile: Dockerfile
+    logging:
+      driver: "json-file"
+    networks:
+      - piclemanetwork
+    volumes:
+      - ./src:/app
+    env_file:
+      - ./.env
+    ports:
+      - "7000:7000"
+    expose:
+      - "7000"
+    command: python3 manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres_db
+
+  postgres_db:
+    container_name: ${COMPOSE_PROJECT_NAME}_postgres
+    hostname: postgres
+    image: postgres:14.1-alpine
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+    ports:
+      - "${POSTGRES_PUBLIC_PORT:-5432}:5432"
+    networks:
+      - piclemanetwork
+    volumes:
+      - piclemadb:/var/lib/postgres_14/data
+    environment:
+      - POSTGRES_DB=piclema
+      - POSTGRES_USER=piclema
+      - POSTGRES_PASSWORD=piclema
+      - POSTGRES_PORT=5432
+
+networks:
+  piclemanetwork:
+
+volumes:
+  piclemadb:
