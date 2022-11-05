@@ -19,7 +19,7 @@ services:
       - "7000:7000"
     expose:
       - "7000"
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: python3 manage.py runserver 0.0.0.0:7000
     depends_on:
       - postgres_db
 
