@@ -10,7 +10,7 @@ services:
     logging:
       driver: "json-file"
     networks:
-      - piclemanetwork
+      - piklematestnetwork
     volumes:
       - ./src:/app
     env_file:
@@ -35,17 +35,17 @@ services:
     ports:
       - "5434:5432"
     networks:
-      - piclemanetwork
+      - piklematestnetwork
     volumes:
-      - piclemadb:/var/lib/postgres_14/data
+      - piklemtestadb:/var/lib/postgres_14/data
     environment:
-      - POSTGRES_DB=piclema
-      - POSTGRES_USER=piclema
-      - POSTGRES_PASSWORD=piclema
+      - POSTGRES_DB=piklema
+      - POSTGRES_USER=piklema
+      - POSTGRES_PASSWORD=piklema
       - POSTGRES_PORT=5432
 
 networks:
-  piclemanetwork:
+  piklematestnetwork:
 
 volumes:
-  piclemadb:
+  piklemtestadb:
