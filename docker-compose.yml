@@ -33,7 +33,7 @@ services:
         max-size: "1m"
         max-file: "1"
     ports:
-      - "${POSTGRES_PUBLIC_PORT:-5432}:5432"
+      - "5434:5432"
     networks:
       - piclemanetwork
     volumes:
