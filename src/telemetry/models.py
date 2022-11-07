@@ -26,7 +26,7 @@ class Device(models.Model):
         verbose_name_plural = 'Устройства'
 
     def __str__(self):
-        return f'{str(self.id)} - {self.name}'
+        return self.name
 
 
 class Tag(models.Model):
@@ -47,11 +47,11 @@ class Tag(models.Model):
     )
     min_value = models.SmallIntegerField(
         verbose_name='Нижняя граница значения',
-        default=-100
+        default=-100,
     )
     max_value = models.SmallIntegerField(
         verbose_name='Верхняя граница значения',
-        default=100
+        default=100,
     )
     created = models.DateTimeField(
         verbose_name='Дата создания',
@@ -67,7 +67,7 @@ class Tag(models.Model):
         verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return f'{self.name} = {self.device}'
+        return f'{self.name} - {self.device.name}'
 
 
 class TagValue(models.Model):

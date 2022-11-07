@@ -11,10 +11,14 @@ class DeviceAdmin(admin.ModelAdmin):
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'name', 'device', 'ratio', 'min_value', 'max_value',
+        'id', 'name', 'device_name', 'ratio', 'min_value', 'max_value',
         'created', 'updated',
     )
     readonly_fields = ('created', 'updated')
+
+    @admin.display(description=Tag.device.field.verbose_name)
+    def device_name(self, obj):
+        return obj.device.name
 
 
 @admin.register(TagValue)
