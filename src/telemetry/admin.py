@@ -20,6 +20,10 @@ class TagAdmin(admin.ModelAdmin):
     def device_name(self, obj):
         return obj.device.name
 
+    def get_queryset(self, request):
+        query = super().get_queryset(request)
+        return query.select_related('device')
+
 
 @admin.register(TagValue)
 class TagValueAdmin(admin.ModelAdmin):
