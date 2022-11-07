@@ -3,7 +3,7 @@ import time
 
 from django.core.management.base import BaseCommand
 
-from telemetry.models import Device, Tag
+from telemetry.models import Device
 
 VERSION = 'some_version'
 MIN_VALUE = -120
@@ -16,12 +16,14 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        device_idx = list(Device.objects.values_list('id', flat=True))
+        devices = Device.objects.prefetch_related('tag_set').all()
+        device_idx = [device.id for device in devices]
 
         while True:
-            device_id = random.choice(device_idx + [0])  # + несуществующее устройство
-            tag_name_list = Tag.objects.filter(device_id=device_id).values_list('name', flat=True)
+            device_id = random.choice(device_idx)
+            tag_name_list = [tag.name for tag in devices.get(id=device_id).tag_set.all()]
             timestamp = time.time()
+
             data = {
                 'timestamp': timestamp,
                 'device_id': device_id,
@@ -30,8 +32,12 @@ class Command(BaseCommand):
             for tag_name in tag_name_list:
                 data.update({tag_name: random.randint(MIN_VALUE, MAX_VALUE)})
 
+            # иногда добавляем некорректное устройство
+            if int(timestamp) % 2 == 0:
+                data['device_id'] = 0
+
             # иногда добавляем некорректный тег
             if int(timestamp) % 3 == 0:
-                data.update({'tag_incorrect': '4'})
+                data.update({'tag_incorrect': 4})
 
             print(data)
