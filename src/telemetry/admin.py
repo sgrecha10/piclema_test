@@ -27,5 +27,5 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(TagValue)
 class TagValueAdmin(admin.ModelAdmin):
-    list_display = ('id', 'tag', 'value', 'created')
-    readonly_fields = ('created',)
+    list_display = ('id', 'tag', 'value', 'version', 'timestamp')
+    readonly_fields = list_display

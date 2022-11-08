@@ -33,6 +33,7 @@ class Tag(models.Model):
     name = models.CharField(
         verbose_name='Наименование',
         max_length=255,
+        db_index=True,
     )
     device = models.ForeignKey(
         Device, on_delete=models.CASCADE,
@@ -78,9 +79,13 @@ class TagValue(models.Model):
     value = models.FloatField(
         verbose_name='Значение',
     )
-    created = models.DateTimeField(
-        verbose_name='Дата создания',
-        auto_now_add=True,
+    version = models.CharField(
+        verbose_name='version',
+        max_length=255,
+        blank=True, default='',
+    )
+    timestamp = models.DateTimeField(
+        verbose_name='timestamp',
     )
 
     class Meta:

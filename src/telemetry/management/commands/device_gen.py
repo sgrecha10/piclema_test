@@ -1,15 +1,18 @@
 import random
 import time
 
+import requests
+from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.urls import reverse
 
 from telemetry.models import Device
-import requests
 
 VERSION = 'some_version'
 MIN_VALUE = -120
 MAX_VALUE = 120
-URL = 'https://webhook.site/e8479211-2099-4cab-9e7b-8fdb466ea087'
+# URL = 'https://webhook.site/e8479211-2099-4cab-9e7b-8fdb466ea087'
+URL = settings.BASE_URL + reverse('tag_value')
 
 
 class Command(BaseCommand):
@@ -46,7 +49,7 @@ class Command(BaseCommand):
                     data.update({'tag_incorrect': 4})
 
                 session.request(
-                    method='GET',
+                    method='POST',
                     url=URL,
                     json=data,
                 )
