@@ -14,7 +14,11 @@ from .models import Device, Tag, TagValue
 @method_decorator(csrf_exempt, name='dispatch')
 class TagValueView(View):
     def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            data = None
+
         self._processing(data)
         return HttpResponse()
 
@@ -22,7 +26,7 @@ class TagValueView(View):
         try:
             device_id = data.pop('device_id')
             device = Device.objects.prefetch_related('tag_set').get(id=device_id)
-        except (Device.DoesNotExist, KeyError):
+        except (Device.DoesNotExist, KeyError, AttributeError):
             logging.error('Device not exists')
             return
 
