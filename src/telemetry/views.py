@@ -23,16 +23,16 @@ class TagValueView(View):
             device_id = data.pop('device_id')
             device = Device.objects.prefetch_related('tag_set').get(id=device_id)
         except (Device.DoesNotExist, KeyError):
-            logging.error(f'Device not exists')
+            logging.error('Device not exists')
             return
 
         if not (timestamp := data.pop('timestamp', None)):
-            logging.error(f'Timestamp not exists')
+            logging.error('Timestamp not exists')
             return
 
         version = data.pop('version', None)
 
-        prepared_data = {}
+        bulk_data = []
         for name_tag, source_value in data.items():
             try:
                 tag = device.tag_set.get(name=name_tag)
@@ -45,10 +45,13 @@ class TagValueView(View):
                 logging.warning(f'Not a reference tag`s value - {value}')
                 return
 
-            prepared_data.update({
-                'tag_id': tag.id,
-                'value': value,
-                'version': version,
-                'timestamp': datetime.fromtimestamp(timestamp, tz=pytz.UTC),
-            })
-            TagValue.objects.create(**prepared_data)
+            bulk_data.append(
+                TagValue(
+                    tag_id=tag.id,
+                    value=value,
+                    version=version,
+                    timestamp=datetime.fromtimestamp(timestamp, tz=pytz.UTC),
+                )
+            )
+
+        TagValue.objects.bulk_create(bulk_data)
