@@ -5,8 +5,25 @@ from .models import Device, Tag, TagValue
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'user', 'created', 'updated')
-    readonly_fields = ('created', 'updated')
+    list_display = (
+        'id', 'name', 'user', 'last_timestamp', 'last_version',
+        'created', 'updated',
+    )
+    readonly_fields = (
+        'last_timestamp', 'last_version', 'created', 'updated',
+    )
+
+    def _get_last_tag_value(self, obj) -> TagValue:
+        tag_ids = list(obj.tag_set.values_list('id', flat=True))
+        return TagValue.objects.filter(
+            tag_id__in=tag_ids,
+        ).last()
+
+    def last_timestamp(self, obj):
+        return self._get_last_tag_value(obj).timestamp.timestamp()
+
+    def last_version(self, obj):
+        return self._get_last_tag_value(obj).version
 
 
 @admin.register(Tag)
