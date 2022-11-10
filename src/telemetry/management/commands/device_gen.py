@@ -1,4 +1,5 @@
 import random
+import sys
 import time
 
 import requests
@@ -21,7 +22,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        print('Generator working..')
+        sys.stdout.write('Generator working..')
 
         devices = Device.objects.prefetch_related('tag_set').all()
         device_idx = [device.id for device in devices]
