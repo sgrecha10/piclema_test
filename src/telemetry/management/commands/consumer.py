@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from kafka import KafkaConsumer
 
-from telemetry.views import TagValueView
+from telemetry.utils import processing
 
 
 class Command(BaseCommand):
@@ -28,6 +28,5 @@ class Command(BaseCommand):
         )
 
         for message in consumer:
-            sys.stdout.write(str(message.value) + '\n')
-            TagValueView.processing(message)
-
+            # sys.stdout.write(str(message.value) + '\n')
+            processing(message.value)
