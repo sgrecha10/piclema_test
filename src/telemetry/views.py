@@ -19,10 +19,11 @@ class TagValueView(View):
         except json.decoder.JSONDecodeError:
             data = None
 
-        self._processing(data)
+        self.processing(data)
         return HttpResponse()
 
-    def _processing(self, data: dict) -> None:
+    @classmethod
+    def processing(cls, data: dict) -> None:
         try:
             device_id = data.pop('device_id')
             device = Device.objects.prefetch_related('tag_set').get(id=device_id)

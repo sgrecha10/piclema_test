@@ -28,7 +28,7 @@ class Command(BaseCommand):
         device_idx = [device.id for device in devices]
 
         kafka_params = settings.KAFKA
-        bootstrap_server = '{}:{}'.format(kafka_params['host'], kafka_params['port'])
+        bootstrap_server = '{}:{}'.format(kafka_params['HOST'], kafka_params['PORT'])
         producer = KafkaProducer(
             bootstrap_servers=[bootstrap_server],
             value_serializer=lambda x: json.dumps(x).encode('utf-8'),
@@ -62,4 +62,4 @@ class Command(BaseCommand):
                 #     json=data,
                 # )
 
-                producer.send(kafka_params['topic'], data)
+                producer.send(kafka_params['TOPIC'], data)
