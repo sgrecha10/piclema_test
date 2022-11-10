@@ -1,6 +1,11 @@
 # piklema_test
 
 ## Установка
+1. Создать .env
+```
+COMPOSE_PROJECT_NAME=piklema_test
+```
+2. Собрать проект
 ```
 docker-compose build
 docker-compose up -d
