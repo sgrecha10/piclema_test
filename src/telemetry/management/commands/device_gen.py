@@ -1,3 +1,4 @@
+import json
 import random
 import sys
 import time
@@ -6,14 +7,13 @@ import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.urls import reverse
+from kafka import KafkaProducer
 
 from telemetry.models import Device
 
 VERSION = 'some_version'
 MIN_VALUE = -120
 MAX_VALUE = 120
-# URL = 'https://webhook.site/e8479211-2099-4cab-9e7b-8fdb466ea087'
-URL = settings.BASE_URL + reverse('tag_value')
 
 
 class Command(BaseCommand):
@@ -26,6 +26,13 @@ class Command(BaseCommand):
 
         devices = Device.objects.prefetch_related('tag_set').all()
         device_idx = [device.id for device in devices]
+
+        kafka_params = settings.KAFKA
+        bootstrap_server = '{}:{}'.format(kafka_params['host'], kafka_params['port'])
+        producer = KafkaProducer(
+            bootstrap_servers=[bootstrap_server],
+            value_serializer=lambda x: json.dumps(x).encode('utf-8'),
+        )
 
         with requests.Session() as session:
             while True:
@@ -49,8 +56,10 @@ class Command(BaseCommand):
                 if int(timestamp) % 3 == 0:
                     data.update({'tag_incorrect': 4})
 
-                session.request(
-                    method='POST',
-                    url=URL,
-                    json=data,
-                )
+                # session.request(
+                #     method='POST',
+                #     url=settings.BASE_URL + reverse('tag_value'),
+                #     json=data,
+                # )
+
+                producer.send(kafka_params['topic'], data)

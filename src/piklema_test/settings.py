@@ -131,6 +131,13 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 BASE_URL = 'http://localhost:7000'
+
+KAFKA = {
+    'host': config('KAFKA_HOST', default='kafka', cast=str),
+    'port': config('KAFKA_PORT', default=9092, cast=int),
+    'topic': config('KAFKA_TOPIC', default='telemetry', cast=str),
+}
+
 #
 # LOGGING = {
 #     'version': 1,
