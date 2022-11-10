@@ -56,7 +56,7 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
 
   kafka:
-    image: bitnami/kafka:2.5.0
+    image: bitnami/kafka:2.4.0
     container_name: ${COMPOSE_PROJECT_NAME}_kafka
     networks:
       - piklematestnetwork

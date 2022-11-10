@@ -1,4 +1,4 @@
-FROM python:3.10.1-alpine3.15
+FROM python:3.8.10-alpine3.14
 
 ENV PYTHONUNBUFFERED=1 \
    LANG=ru_RU.UTF-8 \
@@ -15,7 +15,7 @@ RUN apk add --no-cache --virtual .build-deps \
    gcc\
    g++\
    postgresql-dev\
-   linux-headers
-RUN apk add libressl-dev libffi-dev
-
-RUN pip3 install -r /app/requirements.txt --no-cache-dir
+   linux-headers\
+   libffi-dev
+RUN python -m pip install --upgrade pip
+RUN pip install -r /app/requirements.txt --no-cache-dir
